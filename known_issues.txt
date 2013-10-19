@@ -1,0 +1,9 @@
+known issues:
+
+ - It is not checked if a screen session $ SCREENSESSION exist. If the server is down, but the session is still active, there may be complications.
+	
+	Solution: Manually stop the StarMade server and terminate the session. Then start normally.
+
+ - The cleaning of the database's npc mob of more than 100 entries takes a moment and brings the server to a halt for a short time (10-60s).
+
+	There isn't a solution because the database do this job.

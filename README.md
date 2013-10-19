@@ -43,8 +43,11 @@ system Requirements:
 installation
 
 Should be started shortly, first of the Star Made server so it downloads all the files.
+
 	Example: java -jar StarMade-starter.jar -nogui
+
 In the same directory, a symlink called "server" must be created.
+
 	Example: ln -s /path/to/StarMadeServer/StarMade /path/to/StarMadeServer/server
 
 Settings in the two scripts "smcp.sh" and "start.sh" are made.
@@ -88,8 +91,11 @@ Functions:
 	Edit the welcome message
 
 For regular reboots, you can switch the script with the "-r" call.
+
 	Example: /path/to/StarMadeServer/smcp.sh -r
+
 If this should happen as a crontab entry, you can make the entry as follows to get informed about the output of the script rather than mail.
+
 	Example: /path/to/StarMadeServer/smcp.sh -r > /dev/null
 
 
@@ -130,8 +136,11 @@ Systemvorraussetzungen:
 Installation
 
 Zu allererst sollte der StarMade Server kurz gestartet werden, damit er alle Files herunterlädt.
+
 	Bsp: java -jar StarMade-starter.jar -nogui
+
 Im gleichen Verzeichnis muss ein Symlink namens "server" erstellt werden.
+
 	Bsp: ln -s /pfad/zum/StarMadeServer/StarMade /pfad/zum/StarMadeServer/server
 
 Einstellungen können in den beiden Skripts "smcp.sh" und "start.sh" getätigt werden.
@@ -175,8 +184,11 @@ Funktionen:
 	Die Welcome Message editieren
 
 Für regelmässige Neustarts kann man das Skript mit dem Schalter "-r" aufrufen.
+
 	Bsp: /Pfad/zum/StarMadeServer/smcp.sh -r
+
 Wenn dies als Crontab Eintrag geschehen soll, kann man den Eintrag wie folgt machen um die Ausgabe des Skriptes nicht als Mail mitgeteilt zu bekommen.
+
 	Bsp: /Pfad/zum/StarMadeServer/smcp.sh -r > /dev/null
 
 
