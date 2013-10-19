@@ -39,7 +39,8 @@ SCRIPTNAME=$(basename $0)
 PIDFILE=/tmp/$SCRIPTNAME.pid
 
 # functions
-function restart {
+
+restart(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat        ATTENTION ATTENTION!!!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 5 minutes$(printf \\r)"
@@ -80,10 +81,10 @@ function restart {
 	sleep 5
 }
 
-function serverAlive {
-	status=`echo "" | netcat -v -w 1 localhost $PORT 2>&1|tail -1|awk '{print $5}'`
+serverAlive(){
+	status=$(echo "" | netcat -v -w 1 localhost $PORT 2>&1|tail -1|awk '{print $5}')
 
-	#status=`tcptraceroute -S -w 10 localhost $PORT 2> /dev/null|tail -1|awk '{print $4}'`
+	#status=$(tcptraceroute -S -w 10 localhost $PORT 2> /dev/null|tail -1|awk '{print $4}')
 	if [ "$status" == "open" ]; then
 		echo online
 	else
@@ -91,22 +92,22 @@ function serverAlive {
 	fi
 }
 
-function players {
+players(){
 	probe="\x00\x00\x00\x09\x2a\xff\xff\x01\x6f\x00\x00\x00\x00"
 	echo -n -e "$probe" | netcat -o $BASEDIR/packet/hex.tmp -v -w 1 localhost $PORT > /dev/null 2>&1
 
 	xxd -r $BASEDIR/packet/hex.tmp > $BASEDIR/packet/bin.tmp
 	xxd -p $BASEDIR/packet/bin.tmp | paste -sd '' > $BASEDIR/packet/hex.tmp
-	usersHex=`cat $BASEDIR/packet/hex.tmp | awk '{print substr ($0, length($0)-11, 2)}'`
-	users=`echo "ibase=16;obase=A;${usersHex^^}" | bc`
+	usersHex=$(cat $BASEDIR/packet/hex.tmp | awk '{print substr ($0, length($0)-11, 2)}')
+	users=$(echo "ibase=16;obase=A;${usersHex^^}" | bc)
 	echo "$users player"
 }
 
-function timestamp {
-	echo "`date +%d.%m.%y` `date +%H:%M:%S`"
+timestamp(){
+	echo "$(date +%d.%m.%y) $(date +%H:%M:%S)"
 }
 
-function mobcount {
+mobcount(){
 	MOB=$(ls -l $BASEDIR/server/server-database/ | grep ENTITY_SHIP_MOB | wc -l)
 	if [ $MOB = 0 ] ; then
 		echo "no"
@@ -124,8 +125,8 @@ else
 	ENDEXECUTION=0
 	if [ -f "$PIDFILE" ] ; then
 
-    		RUNNINGPID=`cat "$PIDFILE"`
-    		PROGRAMPID=`ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}'`
+		RUNNINGPID=$(cat "$PIDFILE")
+		PROGRAMPID=$(ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}')
     		
     		for PIDEL in $PROGRAMPID
 			do
@@ -159,7 +160,7 @@ if [ $comparateversion == 1 ] ; then
 fi
 
 # PID grep, for the StarMade Server
-function pid {
+pid(){
 
         user=$(whoami)
         pids=$(ps aux | grep java | grep StarMade.jar | grep $PORT | grep $user | grep -v rlwrap | awk -F" " '{print $2}')

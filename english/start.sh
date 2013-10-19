@@ -15,14 +15,14 @@ SCRIPTNAME=$(basename $0)
 PIDFILE=/tmp/starmade$PORT.pid
 cmd="ionice -c2 -n0 nice -n -10 rlwrap java -Xms$MINMEM -Xmx$MAXMEM -XX:ParallelGCThreads=$CPUTHREADS -d64 -jar StarMade.jar -server -port:$PORT"
 
-function currentSecs {
-	dt=`date +%Y-%m-%d\ %H:%M:%S`
-	echo `date --date="$dt" +%s`
+currentSecs(){
+	dt=$(date +%Y-%m-%d\ %H:%M:%S)
+	echo $(date --date="$dt" +%s)
 }
 
-function shutdowncmd {
-	echo "`timestamp` Initiate user-shutdown." | tee -a $log
-	echo "stop `currentSecs`" > $STATE
+shutdowncmd(){
+	echo "$(timestamp) Initiate user-shutdown." | tee -a $log
+	echo "stop $(currentSecs)" > $STATE
 	echo "" > $ADMINS
 	rm $LOCK
 	rm $PIDFILE
@@ -33,8 +33,8 @@ function shutdowncmd {
 cd $BASEDIR/server
 log=$BASEDIR/server/logs/watchdog.log
 
-function timestamp {
-	echo "`date +%d.%m.%y` `date +%H:%M:%S`"
+timestamp(){
+	echo "$(date +%d.%m.%y) $(date +%H:%M:%S)"
 }
 
 # PIDfile check
@@ -43,8 +43,8 @@ ENDEXECUTION=0
 
 if [ -f "$PIDFILE" ] ; then
 
-	RUNNINGPID=`cat "$PIDFILE"`
-    PROGRAMPID=`ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}'`
+	RUNNINGPID=$(cat "$PIDFILE")
+	PROGRAMPID=$(ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}')
     
     for PIDEL in $PROGRAMPID
     do
@@ -71,8 +71,8 @@ echo $PID > $PIDFILE
 
 while true; do
 
-    echo "start `currentSecs`" > $STATE
-    echo "`timestamp` Running command: '$cmd'" | tee -a $log
+    echo "start $(currentSecs)" > $STATE
+    echo "$(timestamp) Running command: '$cmd'" | tee -a $log
     $cmd
     if [ -f $LOCK ] ; then
 		
@@ -80,7 +80,7 @@ while true; do
     
     else
         
-    	echo "`timestamp` Server 'StarMade' crashed with exit code $?.  Restarting..." | tee -a $log
+	    	echo "$(timestamp) Server 'StarMade' crashed with exit code $?.  Restarting..." | tee -a $log
 		echo "" > $ADMINS
     
     fi
