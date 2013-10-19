@@ -45,7 +45,7 @@ installation
 Should be started shortly, first of the Star Made server so it downloads all the files.
 	Example: java -jar StarMade-starter.jar -nogui
 In the same directory, a symlink called "server" must be created.
-	Example: ln -s /path/to/StarMadeServer/StarMade /pfad/zum StarMadeServer/server
+	Example: ln -s /path/to/StarMadeServer/StarMade /path/to/StarMadeServer/server
 
 Settings in the two scripts "smcp.sh" and "start.sh" are made.
 
@@ -132,7 +132,7 @@ Installation
 Zu allererst sollte der StarMade Server kurz gestartet werden, damit er alle Files herunterlädt.
 	Bsp: java -jar StarMade-starter.jar -nogui
 Im gleichen Verzeichnis muss ein Symlink namens "server" erstellt werden.
-	Bsp: ln -s /pfad/zum/StarMadeServer/StarMade /pfad/zum StarMadeServer/server
+	Bsp: ln -s /pfad/zum/StarMadeServer/StarMade /pfad/zum/StarMadeServer/server
 
 Einstellungen können in den beiden Skripts "smcp.sh" und "start.sh" getätigt werden.
 
