@@ -41,42 +41,42 @@ PIDFILE=/tmp/$SCRIPTNAME.pid
 # functions
 function restart {
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat        ACHTUNG ACHTUNG!!!$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 5 Minuten$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat        ATTENTION ATTENTION!!!$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 5 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "Neustart in: 5min"
+	echo "restart in: 5min"
 	sleep 60
 	
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat Vorbereitung Warpkern-Abschaltung$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 4 Minuten$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat preparation warp-core shutdown$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 4 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "Neustart in: 4min"
+	echo "restart in: 4min"
 	sleep 60
 	
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Geschwindigkeit reduzieren!$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat     Server-Restart in 3 Minuten$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat        reduce speed!$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat     Server-Restart in 3 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "Neustart in: 3min"
+	echo "restart in: 3min"
 	sleep 60
 	
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat     Triebwerke runterfahren!$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 2 Minuten$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat     engine shutdown!$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 2 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "Neustart in: 2min"
+	echo "restart in: 2min"
 	sleep 60
 	
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat         Maschinen alle STOP$(printf \\r)"
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat  Server-Restart in 60 Sekunden$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat       all engines: STOP!$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat  Server-Restart in 60 seconds$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
-	echo "Neustart in: 60s"
+	echo "restart in: 60s"
 	sleep 60
 	
-	echo "Restart wurde durchgefuehrt, bitte ueberpruefen..."
+	echo "restart was performed, please check..."
 	sleep 5
 }
 
@@ -99,7 +99,7 @@ function players {
 	xxd -p $BASEDIR/packet/bin.tmp | paste -sd '' > $BASEDIR/packet/hex.tmp
 	usersHex=`cat $BASEDIR/packet/hex.tmp | awk '{print substr ($0, length($0)-11, 2)}'`
 	users=`echo "ibase=16;obase=A;${usersHex^^}" | bc`
-	echo "$users Spielern"
+	echo "$users player"
 }
 
 function timestamp {
@@ -109,7 +109,7 @@ function timestamp {
 function mobcount {
 	MOB=$(ls -l $BASEDIR/server/server-database/ | grep ENTITY_SHIP_MOB | wc -l)
 	if [ $MOB = 0 ] ; then
-		echo "keine"
+		echo "no"
 	else
         echo "$MOB"
 	fi
@@ -139,11 +139,11 @@ else
  
 	if [ "$ENDEXECUTION" == "1" ] ; then
 
-    	echo "Das StarMade Control Panel V$SMCPVERSION laeuft schon. Beende..."
+    	echo "The StarMade Control Panel V$SMCPVERSION is already running. Abort..."
     	exit 1
     	
 	fi
-	# schreibe PID ins pidfile
+	# write PID in pidfile
 	echo $PID > $PIDFILE
 fi
 
@@ -153,12 +153,12 @@ comparateversion=$(echo $CURRENTSMCPVERSION'>'$SMCPVERSION | bc -l)
 if [ $comparateversion == 1 ] ; then
 	
 	clear
-	echo -e "\nEs ist eine neue Version vorhanden!\n\nDiese Findest du auf http://smcp.cerny.li/"
+	echo -e "\nThere is a new version available!\n\nThere can be found on http://smcp.cerny.li/"
   	sleep 10
 
 fi
 
-# PID grep, fuer den StarMade Server
+# PID grep, for the StarMade Server
 function pid {
 
         user=$(whoami)
@@ -176,40 +176,40 @@ clear
 echo -e "
 StarMade Control Panel V$SMCPVERSION by  \e[31mZ\e[34modiak\e[0m
 StarMade Version: 		$SMVERSION
-PID des StarMade Servers:	$SMPID
+PID of the StarMade Server:	$SMPID
 
- [1]  Start			Startet den StarMade Server
- [2]  Stop			Stoppt den StarMade Server
- [3]  Restart			Startet dem StarMade Server neu
- [4]  Status			Ruft den Status des Servers ab
- [5]  Update			Fuehre ein Update aus
- [6]  emerg			Versuche einen 'emergency shutdown'
- [7]  Kill			Toetet den StarMade Server mit Gewalt
- [8]  Mobclean			Loescht alle Mob Eintraege aus der Datenbank
- [9]  Reattach			Reattached die screen Session '$SCREENSESSION'
- [10] DBSize			Zeigt die aktuelle Groesse der Datenbank
- [11] Befehl			Sende einen Benutzerdefinierten Befehl an den StarMade Server
- [12] Message			Sende eine Benutzerdefinierte Nachricht an alle Spieler
- [13] mkadmin			Vergebe einem Spieler den Adminrang
- [14] rmadmin			Entferne einem Spieler den Adminrang
- [15] mkwhite			Setze einen Spieler auf die whitelist
- [16] editwhite			Editiere die Whitelist
- [17] editserver.cfg		Editiere die server.cfg
- [18] editcron			Editiere crontab
- [19] editblack			Editiere Blacklist
- [20] editmsg			Editiere Welcome Message
+ [1]  start			Start the StarMade Server
+ [2]  stop			Stop the StarMade Server
+ [3]  restart			Restart the StarMade Server
+ [4]  status			Retrieves the status of the server
+ [5]  update			Execute an update
+ [6]  emerg			Try a 'emergency shutdown'
+ [7]  kill			Kills the star made server with violent
+ [8]  mobclean			Deletes all 'mob' records from the database
+ [9]  reattach			Reattach the screensession '$SCREENSESSION'
+ [10] DBSize			Shows the current size of the database
+ [11] order			Send a custom command to the StarMade server
+ [12] message			Send a custom message to all players
+ [13] mkadmin			Make a player admin
+ [14] rmadmin			Remove a admin
+ [15] mkwhite			Add a Player to the whitelist
+ [16] editwhite			Edit the whitelist
+ [17] editserver.cfg		Edit the server.cfg
+ [18] editcron			Edit the crontab
+ [19] editblack			Edit the blacklist
+ [20] editmsg			Edit the welcome message
 
- [r]  reload			Druecke 'r' um das StarMade Control Panel zu aktualisieren
- [0]  Abbruch			Kehre zur Shell zurueck\n"
+ [r]  reload			Press 'r' to update the Control Panel
+ [0]  abort			Return to the shell\n"
 
-read -p "Auswahl: " answer
+read -p "choice: " answer
 
 case $answer in
 
 	1)
 	
 	    #if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
-			# session existiert nicht
+			# session doesn't exist
 			echo "Starting screen session '$SCREENSESSION'..."
 			screen -d -m -S $SCREENSESSION
 			echo "now, i'm just crawling under the couch to find the start.sh"
@@ -224,7 +224,7 @@ case $answer in
 
 	    #else
 
-			#echo "Es laeuft schon eine Screen session, bitte ueberpruefen..."
+			#echo "It is already a running '$SCREENSESSION' screen session, please check..."
 			#sleep 5
 
 	    #fi
@@ -232,26 +232,26 @@ case $answer in
 
 	2)
 	
-		read -p "Soll der Server wirklich heruntergefahren werden? j/n: " stopanswer
-		if [ "$stopanswer" = "j" ] ; then
+		read -p "Should the server be shut down? y/n: " stopanswer
+		if [ "$stopanswer" = "y" ] ; then
 
 			touch $LOCK
-			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server/Backup/Update in 2 Minuten!$(printf \\r)"
+			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
 			screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
 			echo "Initiate shutdown. Time left: 120s"
 			sleep 60
-			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server/Backup/Update in 60 Sekunden!$(printf \\r)"
+			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server Backup or Update in 60 seconds!$(printf \\r)"
 			screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
 			echo "Shutdown in 60s"
 			sleep 30
 			echo "Shutdown in 30s"
 			sleep 30
-            echo "Shutdown wurde durchgefuehrt, bitte ueberpruefen..."
+            echo "Shutdown was performed, please check..."
 			sleep 5
 
 		else
 
-			echo "Breche ab..."
+			echo "Abort..."
 			sleep 5
 
 		fi
@@ -259,14 +259,14 @@ case $answer in
 
 	3)
 	
-		read -p "Soll der Server wirklich neugestartet werden? j/n: " restartanswer
-		if [ "$restartanswer" = "j" ] ; then
+		read -p "Should the server be restarting? y/n: " restartanswer
+		if [ "$restartanswer" = "y" ] ; then
 
 			restart
 
 		else
 
-		echo "Breche ab..."
+		echo "Abort..."
 		sleep 5
 
 		fi
@@ -274,58 +274,58 @@ case $answer in
 
 	4)
 	
-	    echo "Server ist `serverAlive` mit `players` von maximal $MAXPLAYERS Spielern"
+		echo "Server is $(serverAlive) with $(players) of max $MAXPLAYERS players."
 		sleep 8
 	    ;;
 	    
 	5)
 	
-		echo "Es wird empfohlen vor einem Update ein Backup zu machen"
-		read -p "Soll der Server wirklich geupdatet werden? j/n: " updateanswer
-		if [ "$updateanswer" = "j" ] ; then
+		echo "It is recommended before updating to make a backup!"
+		read -p "Should the server be updating? y/n: " updateanswer
+		if [ "$updateanswer" = "y" ] ; then
 			
-			read -p "Soll der Server wirklich heruntergefahren werden? j/n: " stopanswer
-            if [ "$stopanswer" = "j" ] ; then
+			read -p "Should the server be shut down? y/n: " stopanswer
+            if [ "$stopanswer" = "y" ] ; then
 
 				touch $LOCK
-                screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server/Backup/Update in 2 Minuten!$(printf \\r)"
+                screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
                 screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
                 echo "Initiate shutdown. Time left: 120s"
                 sleep 60
-                screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server/Backup/Update in 60 Sekunden!$(printf \\r)"
+                screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 60 seconds!$(printf \\r)"
                 screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
                 echo "Shutdown in 60s"
                 sleep 30
                 echo "Shutdown in 30s"
                 sleep 30
-                echo "Shutdown wurde durchgefuehrt"
-                echo "ueberpruefe..."
+                echo "Shutdown was perfomed. Please check..."
+                echo "Checking server status..."
                 sleep 1
                 
 				if [ "$(serverAlive)" = "offline" ] ; then
 				
-					echo "Server wurde Ordnungsgemaess heruntergefahren. Fahre mit dem Update fort..."
+					echo "Server has been shut down properly. Proceed with the update..."
 					sleep 3
 					java -jar StarMade-Starter.jar -nogui
 					sleep 15
 				
 				else
 				
-					echo "Server wurde nicht heruntergefahren. Bitte ueberpruefen! Breche ab..."
+					echo "Server was not shut down. Please Check! Abort update..."
 					sleep 5
 				
 				fi
 
             else
 
-                echo "Breche ab..."
+                echo "Abort..."
                 sleep 5
 			
 			fi
 
 		else
 		
-			echo "Breche ab..."
+			echo "Abort..."
 			sleep 5
 
 		fi
@@ -333,18 +333,18 @@ case $answer in
 	    
 	6)
 	
-	    read -p "Soll ein 'emergency shutdown' durchgefuehrt werden? j/n: " emerganswer
-	    if [ "$emerganswer" = "j" ] ; then
+	    read -p "Should be a 'emergency shutdown' performed? y/n: " emerganswer
+	    if [ "$emerganswer" = "y" ] ; then
 
-			echo "Schicke Terminierungssignal (SIGTERM)"
+			echo "Send termination signal (SIGTERM)"
 			sleep 1
 			kill $SMPID
-			echo "Wurde durchgefuehrt, bitte ueberpruefen..."
+			echo "Was performed, please check..."
 			sleep 5
 
 	    else
 		
-			echo "Breche ab..."
+			echo "Abort..."
 			sleep 5
 
 	    fi
@@ -352,13 +352,13 @@ case $answer in
 	    
 	7)
 	
-		echo -e "\n\e[31m\e[4mACHTUNG!!! Bei der Nutzung dieser Funktion WIRD es DATENVERLUST geben!\e[0m"
-	    read -p "Wirklich fortfahren? Falls ja schreibe: Ja, ich will fortfahren! : " killanswer
-		if [ "$killanswer" = "Ja, ich will fortfahren!" ] ; then
+		echo -e "\n\e[31m\e[4mCAUTION!!! When using this function, it IS LOST DATA!\e[0m"
+	    read -p "Really proceed? If yes, write: Yes, I want to continue! : " killanswer
+		if [ "$killanswer" = "Yes, I want to continue!" ] ; then
 		
-			echo "Packe den Vorschlaghammer aus..."
+			echo "Grab the sledgehammer..."
 			sleep 2
-			echo "Fange an auf den Prozess zu haemmern"
+			echo "Beat the process down..."
 			sleep 1
 			echo "*dong*"
 			sleep 1
@@ -366,15 +366,15 @@ case $answer in
 	        sleep 2
 			echo "*klirr*"
 			sleep 1
-			echo "fuere 'kill -9 $SMPID' aus"
+			echo "execute 'kill -9 $SMPID'"
 	    	kill -9 $SMPID
 			sleep 1
-			echo "Der Prozess wurde erfolgreich getoetet, starte neu..."
+			echo "Termination of the process is successfully, restarting..."
 			sleep 4
 
 	    else
 
-			echo "Falsche Antwort, breche ab..."
+			echo "Wrong answer, abort..."
 			sleep 5
 
 	    fi
@@ -384,20 +384,20 @@ case $answer in
 	
 	    screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
 	    sleep 10
-	    echo "In der Datenbank wurden `mobcount` Eintraege zu Mobs gefunden."
-	    read -p "Fortfahren mit der Loeschung? [j/n]:" answer
-		if [ "$answer" = "j" ] ; then
+	    echo "$(mobcount) records of mobs where found in the database."
+	    read -p "Proceed with the deletion? [y/n]:" answer
+		if [ "$answer" = "y" ] ; then
 
-			echo "Loesche Mobeintraege aus der Datenbank..."
+			echo "Deleting Mob records..."
 			screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB unused true$(printf \\r)"
-			echo "`timestamp` Despawn all Mobs." | tee -a $LOG
+			echo "$(timestamp) Despawn all Mobs." | tee -a $LOG
 			sleep 5
-			echo "Loeschung der Eintraege durchgefuehrt. Aktuell sind `mobcount` Eintraege zu Mobs vorhanden."
+			echo "Performed deletion. $(mobcount) records of mobs where found in the database."
 			sleep 5
 
 	    else
 
-			echo "Abbruch"
+			echo "Abort..."
 			Sleep 3
 
 	    fi
@@ -411,7 +411,7 @@ case $answer in
 	
 	10)
 
-		echo "Berechne..."
+		echo "calculate..."
 	    sleep 1
 	    du -sch $BASEDIR/server/server-database/ | tail -n 1
 	    sleep 5
@@ -419,15 +419,15 @@ case $answer in
 		
 	11)
 	
-	    echo -e "Alle StarMade Befehle moeglich. Achtung! keine Rueckmeldung.\nBeispiel: /force_save"
-	    read -p "Befehl eingeben: " order
+	    echo -e "All StarMade commands are possible. Caution! no feedback .\nExample: /force_save"
+	    read -p "enter the command: " order
 	    screen -S $SCREENSESSION -p 0 -X stuff "$order $(printf \\r)"
 	    sleep 2
 		;;
 	
 	12)
 	
-	    echo "Achtung, keine Umlaute und nur eine Zeile Moeglich!"
+	    echo "Attention, only one row is possible!"
 	    read -p "Broadcast Message: " msg
 	    screen -S $SCREENSESSION -p 0 -X stuff "/chat $msg $(printf \\r)"
 	    sleep 2
@@ -435,42 +435,42 @@ case $answer in
 		
 	13) 
 	
-	    echo "Aktuelle Admins:"
+	    echo "current admins:"
 	    cat $BASEDIR/server/admins.txt
 	    echo ""
-	    echo "Unbedingt auf Gross/kleinschreibung achten."
-	    read -p "Benutzername eingeben: " mkadmin
+	    echo "Pay attention to upper/lower case."
+	    read -p "Type username: " mkadmin
 	    screen -S $SCREENSESSION -p 0 -X stuff "/add_admin $mkadmin $(printf \\r)"
 		sleep 5
-		echo "Aktuelle Admins:"
+		echo "current admins:"
 		cat $BASEDIR/server/admins.txt
 		sleep 5
 		;;
        
 	14)
     
-		echo "Aktuelle Admins:"
+		echo "current admins:"
 		cat $BASEDIR/server/admins.txt
 		echo ""
-		echo "Unbedingt auf Gross/kleinschreibung achten."
-		read -p "Benutzername eingeben: " rmadmin
+		echo "Pay attention to upper/lower case."
+		read -p "Type username: " rmadmin
 		screen -S $SCREENSESSION -p 0 -X stuff "/remove_admin $rmadmin $(printf \\r)"
 		sleep 5
-		echo "Aktuelle Admins:"
+		echo "current admins:"
 		cat $BASEDIR/server/admins.txt
 		sleep 5
 		;;
 		
 	15)
-		echo "Unbedingt auf Gross/kleinschreibung achten."
-		read -p "Benutzername eingeben: " mkwhite
+		echo "Pay attention to upper/lower case."
+		read -p "Type username: " mkwhite
 		screen -S $SCREENSESSION -p 0 -X stuff "/whitelist_name $mkwhite $(printf \\r)"
 		sleep 1
 		;;
 
 	16)
 
-		echo "Oeffne Datei..."
+		echo "open file..."
 	    sleep 2
 		$EDITOR $BASEDIR/server/whitelist.txt
 		sleep 1
@@ -478,15 +478,15 @@ case $answer in
 
 	17)
 
-		echo "Oeffne Datei..."
+		echo "open file..."
 		sleep 2
 		$EDITOR $BASEDIR/server/server.cfg
 		sleep 1
-		read -p "Soll der Server neugestartet werden? [j/n]: " restartanswer
-		if [ "$restartanswer" = "j" ] ; then
+		read -p "Should the server be restarting? [y/n]: " restartanswer
+		if [ "$restartanswer" = "y" ] ; then
 			restart
 		else
-			echo "Starte nicht neu. Die Server Settings werden erst beim naechsten Neustart wieder eingelesen."
+			echo "Don't restart. The server settings are read again until the next restart."
 			sleep 5
 		fi
 		;;
@@ -499,14 +499,14 @@ case $answer in
 	
 	19)
     
-		echo "Oeffne Datei..."
+		echo "open file..."
 		sleep 2
 		$EDITOR $BASEDIR/server/blacklist.txt
 		sleep 1
 		;;
 
 	20)
-		echo "Oeffne Datei..."
+		echo "openfile..."
 		sleep 2
 		$EDITOR $BASEDIR/server/server-message.txt
 		sleep 1
@@ -514,7 +514,7 @@ case $answer in
 
 	0)
 	
-		echo "Verlasse das StarMade Control Panel"
+		echo "Exit the StarMade Control Panel..."
 		sleep 1
 	    break
 		;;
@@ -527,7 +527,7 @@ case $answer in
 	
 	*)
 	
-	    echo "unbekannter Parameter, kehre zum Menu zurueck"
+	    echo "unknown parameter, return back to the menu"
 	    sleep 1
 esac
 

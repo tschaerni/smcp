@@ -37,8 +37,8 @@ function timestamp {
 	echo "`date +%d.%m.%y` `date +%H:%M:%S`"
 }
 
-# PIDfile abfrage
-# ENDEXECUTION, ist 1, stoppe Skript, ist 0, fahre fort
+# PIDfile check
+# ENDEXECUTION, if 1, stop script, if 0 proceed.
 ENDEXECUTION=0
 
 if [ -f "$PIDFILE" ] ; then
@@ -62,11 +62,11 @@ fi
 
 if [ "$ENDEXECUTION" == "1" ] ; then
 
-    echo "Es läuft schon ein StarMade Server auf Port $PORT. Beende..."
+    echo "It is already a server running on port $PORT. Finish..."
     exit 1
     
 fi
-# schreibe PID ins pidfile
+# write PID in pidfile
 echo $PID > $PIDFILE
 
 while true; do
