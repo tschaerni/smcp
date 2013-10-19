@@ -174,8 +174,15 @@ SMPID=$(pid)
 
 clear
 
+echo ""
+echo -e "\e[31m		   _____\e[34m____ ___  _________       \e[0m"
+echo -e "\e[31m		  / ___/\e[34m __ '__ \/ ___/ __ \      \e[0m"
+echo -e "\e[31m		 (__  ) \e[34m/ / / / / /__/ /_/ /      \e[0m"
+echo -e "\e[31m		/____/\e[34m_/ /_/ /_/\___/ .___/       \e[0m"
+echo -e "\e[34m		                   /_/            \e[0m"
 echo -e "
-StarMade Control Panel V$SMCPVERSION by  \e[31mZ\e[34modiak\e[0m
+            StarMade Control Panel V$SMCPVERSION by  \e[31mZ\e[34modiak\e[0m
+
 StarMade Version: 		$SMVERSION
 PID of the StarMade Server:	$SMPID
 
