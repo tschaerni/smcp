@@ -1,0 +1,16 @@
+Todo List:
+
+[ ]		improve the screen-session check feature (is implementet but isn't really working)
+[ ]		improve the layout of the source (has some ugly tab/whitespace changes)
+[ ]		implement an improved control function (the probe one from Mikuz isn't really working)
+[ ]		write an install script with some checks about requirements
+[ ]		write an broadcast service for server messages.
+[ ]		implement a search function for the logs to make that annoying thing easier
+[ ]		remove the german version (it makes more sense when i do the changes on one script ;)
+[ ]		mobclean feature + crontab
+
+eventually coming features:
+
+	a Language file, so it is easier to translate the text to other languages
+
+	eventually a lib file for the functions, it make the script smaller
