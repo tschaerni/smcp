@@ -8,9 +8,15 @@ Todo List:
 [ ]		implement a search function for the logs to make that annoying thing easier
 [ ]		remove the german version (it makes more sense when i do the changes on one script ;)
 [ ]		mobclean feature + crontab
+[ ]		implement backupfunctions for Database / config files
+[ ]		uptime display
 
 eventually coming features:
 
-	a Language file, so it is easier to translate the text to other languages
+	- a Language file, so it is easier to translate the text to other languages
 
-	eventually a lib file for the functions, it make the script smaller
+	- eventually a lib file for the functions, it make the script smaller
+
+	- a single config file for both scripts
+
+	- menus with dialog (the ncurses one)
