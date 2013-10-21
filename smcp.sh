@@ -48,28 +48,28 @@ restart(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	echo "restart in: 5min"
 	sleep 60
-	
+
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat preparation warp-core shutdown$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 4 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	echo "restart in: 4min"
 	sleep 60
-	
+
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat        reduce speed!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat     Server-Restart in 3 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	echo "restart in: 3min"
 	sleep 60
-	
+
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat     engine shutdown!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 2 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	echo "restart in: 2min"
 	sleep 60
-	
+
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat       all engines: STOP!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat  Server-Restart in 60 seconds$(printf \\r)"
@@ -77,7 +77,7 @@ restart(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
 	echo "restart in: 60s"
 	sleep 60
-	
+
 	echo "restart was performed, please check..."
 	sleep 5
 }
@@ -101,7 +101,6 @@ players(){
 
 	probe="\x00\x00\x00\x09\x2a\xff\xff\x01\x6f\x00\x00\x00\x00"
 	echo -n -e "$probe" | netcat -o $BASEDIR/packet/hex.tmp -v -w 1 localhost $PORT > /dev/null 2>&1
-
 	xxd -r $BASEDIR/packet/hex.tmp > $BASEDIR/packet/bin.tmp
 	xxd -p $BASEDIR/packet/bin.tmp | paste -sd '' > $BASEDIR/packet/hex.tmp
 	usersHex=$(cat $BASEDIR/packet/hex.tmp | awk '{print substr ($0, length($0)-11, 2)}')
@@ -130,59 +129,65 @@ mobcount(){
 
 # restart over parameter
 if [ "$1" = "-r" ] ; then
-	
+
 	restart
 	exit 0
-	
+
 else
+
 	ENDEXECUTION=0
 	if [ -f "$PIDFILE" ] ; then
 
 		RUNNINGPID=$(cat "$PIDFILE")
 		PROGRAMPID=$(ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}')
-    		
-    		for PIDEL in $PROGRAMPID
+
+			for PIDEL in $PROGRAMPID
 			do
 				if [ "$PIDEL" == "$RUNNINGPID" ] ; then
-				
+
 					ENDEXECUTION=1
 					break
+
 				fi
+
 			done
+
 	fi
  
 	if [ "$ENDEXECUTION" == "1" ] ; then
 
-    	echo "The StarMade Control Panel V$SMCPVERSION is already running. Abort..."
-    	exit 1
-    	
+		echo "The StarMade Control Panel V$SMCPVERSION is already running. Abort..."
+		exit 1
+
 	fi
 	# write PID in pidfile
 	echo $PID > $PIDFILE
+
 fi
 
 #versioncheck 
 CURRENTSMCPVERSION=$(curl --silent http://smcp.cerny.li/version)
 comparateversion=$(echo $CURRENTSMCPVERSION'>'$SMCPVERSION | bc -l)
 if [ $comparateversion == 1 ] ; then
-	
+
 	clear
 	echo -e "\nThere is a new version available!\n\nThere can be found on http://smcp.cerny.li/"
-  	sleep 10
+	sleep 10
 
 fi
 
 # PID grep, for the StarMade Server
 pid(){
 
-        user=$(whoami)
-        pids=$(ps aux | grep java | grep StarMade.jar | grep $PORT | grep $user | grep -v rlwrap | awk -F" " '{print $2}')
-        echo "$pids"
+		user=$(whoami)
+		pids=$(ps aux | grep java | grep StarMade.jar | grep $PORT | grep $user | grep -v rlwrap | awk -F" " '{print $2}')
+		echo "$pids"
 }
 
 # Menu
 while true; do
 
+# refresh starmade pid
 SMPID=$(pid)
 
 clear
@@ -229,7 +234,7 @@ case $answer in
 
 	1)
 
-	    #if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
+		#if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
 			# session doesn't exist
 			echo "Starting screen session '$SCREENSESSION'..."
 			screen -d -m -S $SCREENSESSION
@@ -248,11 +253,11 @@ case $answer in
 			#echo "It is already a running '$SCREENSESSION' screen session, please check..."
 			#sleep 5
 
-	    #fi
+		#fi
 		;;
 
 	2)
-	
+
 		read -p "Should the server be shut down? y/n: " stopanswer
 		if [ "$stopanswer" = "y" ] ; then
 
@@ -276,10 +281,10 @@ case $answer in
 			sleep 5
 
 		fi
-	    ;;
+		;;
 
 	3)
-	
+
 		read -p "Should the server be restarting? y/n: " restartanswer
 		if [ "$restartanswer" = "y" ] ; then
 
@@ -294,17 +299,17 @@ case $answer in
 		;;
 
 	4)
-	
+
 		echo "Server is $(serverAlive) with $(players) of max $MAXPLAYERS players."
 		sleep 8
 		;;
-	    
+
 	5)
 	
 		echo "It is recommended before updating to make a backup!"
 		read -p "Should the server be updating? y/n: " updateanswer
 		if [ "$updateanswer" = "y" ] ; then
-			
+
 			read -p "Should the server be shut down? y/n: " stopanswer
 			if [ "$stopanswer" = "y" ] ; then
 
@@ -324,38 +329,38 @@ case $answer in
 				sleep 1
 
 				if [ "$(serverAlive)" = "offline" ] ; then
-				
+
 					echo "Server has been shut down properly. Proceed with the update..."
 					sleep 3
 					java -jar StarMade-Starter.jar -nogui
 					sleep 15
-				
+
 				else
-				
+
 					echo "Server was not shut down. Please Check! Abort update..."
 					sleep 5
-				
+
 				fi
 
 			else
 
 				echo "Abort..."
 				sleep 5
-			
+
 			fi
 
 		else
-		
+
 			echo "Abort..."
 			sleep 5
 
 		fi
 		;;  
-	    
+
 	6)
-	
-	    read -p "Should be a 'emergency shutdown' performed? y/n: " emerganswer
-	    if [ "$emerganswer" = "y" ] ; then
+
+		read -p "Should be a 'emergency shutdown' performed? y/n: " emerganswer
+		if [ "$emerganswer" = "y" ] ; then
 
 			echo "Send termination signal (SIGTERM)"
 			sleep 1
@@ -364,7 +369,7 @@ case $answer in
 			sleep 5
 
 		else
-		
+
 			echo "Abort..."
 			sleep 5
 
@@ -372,7 +377,7 @@ case $answer in
 		;;
 
 	7)
-	
+
 		echo -e "\n\e[31m\e[4mCAUTION!!! When using this function, it IS LOST DATA!\e[0m"
 		read -p "Really proceed? If yes, write: Yes, I want to continue! : " killanswer
 		if [ "$killanswer" = "Yes, I want to continue!" ] ; then
@@ -400,9 +405,9 @@ case $answer in
 
 		fi
 		;;
-		
+
 	8)
-	
+
 		screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
 		sleep 10
 		echo "$(mobcount) records of mobs where found in the database."
@@ -416,7 +421,7 @@ case $answer in
 			echo "Performed deletion. $(mobcount) records of mobs where found in the database."
 			sleep 5
 
-	    else
+		else
 
 			echo "Abort..."
 			Sleep 3
@@ -445,9 +450,9 @@ case $answer in
 		screen -S $SCREENSESSION -p 0 -X stuff "$order $(printf \\r)"
 		sleep 2
 		;;
-	
+
 	12)
-	
+
 		echo "Attention, only one row is possible!"
 		read -p "Broadcast Message: " msg
 		screen -S $SCREENSESSION -p 0 -X stuff "/chat $msg $(printf \\r)"
@@ -481,8 +486,9 @@ case $answer in
 		cat $BASEDIR/server/admins.txt
 		sleep 5
 		;;
-		
+
 	15)
+
 		echo "Pay attention to upper/lower case."
 		read -p "Type username: " mkwhite
 		screen -S $SCREENSESSION -p 0 -X stuff "/whitelist_name $mkwhite $(printf \\r)"
@@ -511,7 +517,7 @@ case $answer in
 			sleep 5
 		fi
 		;;
-		
+
 	18)
 
 	    crontab -e
@@ -527,6 +533,7 @@ case $answer in
 		;;
 
 	20)
+
 		echo "openfile..."
 		sleep 2
 		$EDITOR $BASEDIR/server/server-message.txt
@@ -551,10 +558,11 @@ case $answer in
 	    echo "unknown parameter, return back to the menu"
 	    sleep 1
 
+# end of case
 esac
-
+# end of pid check
 done
-
+# rm pidfile
 rm $PIDFILE
 
 exit 0
