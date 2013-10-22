@@ -6,8 +6,8 @@ Todo List:
 [ ]		write an install script with some checks about requirements
 [ ]		write an broadcast service for server messages.
 [ ]		implement a search function for the logs to make that annoying thing easier
-[ ]		remove the german version (it makes more sense when i do the changes on one script ;)
-[ ]		mobclean feature + crontab
+[X]		remove the german version (it makes more sense when i do the changes on one script ;)
+[X]		mobclean feature + crontab
 [ ]		implement backupfunctions for Database / config files
 [ ]		uptime display
 
