@@ -71,15 +71,15 @@ echo $PID > $PIDFILE
 
 while true; do
 
-	echo "start $(currentSecs)" > $STATE
-	echo "$(timestamp) Running command: '$cmd'" | tee -a $log
-	$cmd
 	if [ -f $LOCK ] ; then
 
 		shutdowncmd
 
 	else
 
+		echo "start $(currentSecs)" > $STATE
+		echo "$(timestamp) Running command: '$cmd'" | tee -a $log
+		$cmd
 		echo "$(timestamp) Server 'StarMade' crashed with exit code $?.  Restarting..." | tee -a $log
 		echo "" > $ADMINS
 

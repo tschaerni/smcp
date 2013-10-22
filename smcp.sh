@@ -137,7 +137,7 @@ cleanmob(){
 	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG«
 
 }
-# mobclean over parameter
+# mobclean over parameter			XXX XXX Hier kommt noch eine Fallunterscheidung hin (case $1 ; -r) -c) *) ; esac)	XXX XXX XXX
 if [ "$1" = "-c" ] ; then
 
 	cleanmob
@@ -181,7 +181,7 @@ else
 		# write PID in pidfile
 		echo $PID > $PIDFILE
 
-	# end fi for 145
+	# end if for 145
 	fi
 
 # end if for 137
@@ -270,7 +270,7 @@ case $answer in
 			sleep 1
 			echo "My job is done. Greetings from Zodiak!"
 
-	    #else
+		#else
 
 			#echo "It is already a running '$SCREENSESSION' screen session, please check..."
 			#sleep 5
@@ -467,7 +467,7 @@ case $answer in
 
 	11)	# send command
 
-		echo -e "All StarMade commands are possible. Caution! no feedback .\nExample: /force_save"
+		echo -e "All StarMade commands are possible. Caution! no feedback.\nExample: /force_save"
 		read -p "enter the command: " order
 		screen -S $SCREENSESSION -p 0 -X stuff "$order $(printf \\r)"
 		sleep 2
@@ -562,20 +562,20 @@ case $answer in
 		sleep 1
 		;;
 
-	0)
+	0)	# exit the script
 
 		echo "Exit the StarMade Control Panel..."
 		sleep 1
 		break
 		;;
 
-	r)
+	r)	# reload the panel for some layout issues or for PID Reload
 
 		echo "reload"
 		sleep 1 
 		;;
 
-	*)
+	*) # i think this functions is clear like water ;)
 
 	    echo "unknown parameter, return back to the menu"
 	    sleep 1
