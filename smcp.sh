@@ -42,6 +42,7 @@ PIDFILE=/tmp/$SCRIPTNAME.pid
 # functions
 
 restart(){
+
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat        ATTENTION ATTENTION!!!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 5 minutes$(printf \\r)"
@@ -80,9 +81,11 @@ restart(){
 
 	echo "restart was performed, please check..."
 	sleep 5
+
 }
 
-serverAlive(){
+serverAlive()
+{
 	status=$(echo "" | netcat -v -w 1 localhost $PORT 2>&1|tail -1|awk '{print $5}')
 
 	#status=$(tcptraceroute -S -w 10 localhost $PORT 2> /dev/null|tail -1|awk '{print $4}')
@@ -95,6 +98,7 @@ serverAlive(){
 		echo offline
 
 	fi
+
 }
 
 players(){
@@ -127,44 +131,61 @@ mobcount(){
 	fi
 }
 
-# restart over parameter
-if [ "$1" = "-r" ] ; then
+cleanmob(){
 
-	restart
+	screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB unused true$(printf \\r)"«
+	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG«
+
+}
+# mobclean over parameter
+if [ "$1" = "-c" ] ; then
+
+	cleanmob
 	exit 0
 
 else
 
-	ENDEXECUTION=0
-	if [ -f "$PIDFILE" ] ; then
+	# restart over parameter
+	if [ "$1" = "-r" ] ; then
 
-		RUNNINGPID=$(cat "$PIDFILE")
-		PROGRAMPID=$(ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}')
+		restart
+		exit 0
 
-			for PIDEL in $PROGRAMPID
-			do
-				if [ "$PIDEL" == "$RUNNINGPID" ] ; then
+	else
 
-					ENDEXECUTION=1
-					break
+		ENDEXECUTION=0
+		if [ -f "$PIDFILE" ] ; then
 
-				fi
+			RUNNINGPID=$(cat "$PIDFILE")
+			PROGRAMPID=$(ps ax | grep "$SCRIPTNAME" | grep -v grep | awk '{print $1;}')
 
-			done
+				for PIDEL in $PROGRAMPID
+				do
+					if [ "$PIDEL" == "$RUNNINGPID" ] ; then
 
+						ENDEXECUTION=1
+						break
+
+					fi
+
+				done
+
+		fi
+
+		if [ "$ENDEXECUTION" == "1" ] ; then
+
+			echo "The StarMade Control Panel V$SMCPVERSION is already running. Abort..."
+			exit 1
+
+		fi
+		# write PID in pidfile
+		echo $PID > $PIDFILE
+
+	# end fi for 145
 	fi
- 
-	if [ "$ENDEXECUTION" == "1" ] ; then
 
-		echo "The StarMade Control Panel V$SMCPVERSION is already running. Abort..."
-		exit 1
-
-	fi
-	# write PID in pidfile
-	echo $PID > $PIDFILE
-
+# end if for 137
 fi
-
 #versioncheck 
 CURRENTSMCPVERSION=$(curl --silent http://smcp.cerny.li/version)
 comparateversion=$(echo $CURRENTSMCPVERSION'>'$SMCPVERSION | bc -l)
@@ -182,6 +203,7 @@ pid(){
 		user=$(whoami)
 		pids=$(ps aux | grep java | grep StarMade.jar | grep $PORT | grep $user | grep -v rlwrap | awk -F" " '{print $2}')
 		echo "$pids"
+
 }
 
 # Menu
@@ -232,7 +254,7 @@ read -p "choice: " answer
 
 case $answer in
 
-	1)
+	1)	# start
 
 		#if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
 			# session doesn't exist
@@ -256,7 +278,7 @@ case $answer in
 		#fi
 		;;
 
-	2)
+	2)	# shutdown
 
 		read -p "Should the server be shut down? y/n: " stopanswer
 		if [ "$stopanswer" = "y" ] ; then
@@ -283,7 +305,7 @@ case $answer in
 		fi
 		;;
 
-	3)
+	3)	# restart
 
 		read -p "Should the server be restarting? y/n: " restartanswer
 		if [ "$restartanswer" = "y" ] ; then
@@ -298,13 +320,13 @@ case $answer in
 		fi
 		;;
 
-	4)
+	4)	# status
 
 		echo "Server is $(serverAlive) with $(players) of max $MAXPLAYERS players."
 		sleep 8
 		;;
 
-	5)
+	5)	# update
 	
 		echo "It is recommended before updating to make a backup!"
 		read -p "Should the server be updating? y/n: " updateanswer
@@ -357,7 +379,7 @@ case $answer in
 		fi
 		;;  
 
-	6)
+	6)	# emergency shutdown
 
 		read -p "Should be a 'emergency shutdown' performed? y/n: " emerganswer
 		if [ "$emerganswer" = "y" ] ; then
@@ -376,7 +398,7 @@ case $answer in
 		fi
 		;;
 
-	7)
+	7)	# kill the server process
 
 		echo -e "\n\e[31m\e[4mCAUTION!!! When using this function, it IS LOST DATA!\e[0m"
 		read -p "Really proceed? If yes, write: Yes, I want to continue! : " killanswer
@@ -406,7 +428,7 @@ case $answer in
 		fi
 		;;
 
-	8)
+	8) # mob clean
 
 		screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
 		sleep 10
@@ -429,13 +451,13 @@ case $answer in
 		fi
 		;;
 
-	9)
+	9)	# reattach the screensession
 
-		screen -r $SCREENSESSION
+		screen -rx $SCREENSESSION
 		sleep 2
 		;;
 
-	10)
+	10)	# Database size
 
 		echo "calculate..."
 		sleep 1
@@ -443,7 +465,7 @@ case $answer in
 		sleep 5
 		;;
 
-	11)
+	11)	# send command
 
 		echo -e "All StarMade commands are possible. Caution! no feedback .\nExample: /force_save"
 		read -p "enter the command: " order
@@ -451,7 +473,7 @@ case $answer in
 		sleep 2
 		;;
 
-	12)
+	12)	# send message
 
 		echo "Attention, only one row is possible!"
 		read -p "Broadcast Message: " msg
@@ -459,7 +481,7 @@ case $answer in
 		sleep 2
 		;;
 
-	13) 
+	13)	# make admin
 
 		echo "current admins:"
 		cat $BASEDIR/server/admins.txt
@@ -473,7 +495,7 @@ case $answer in
 		sleep 5
 		;;
 
-	14)
+	14)	# remove admin
 
 		echo "current admins:"
 		cat $BASEDIR/server/admins.txt
@@ -487,7 +509,7 @@ case $answer in
 		sleep 5
 		;;
 
-	15)
+	15)	# add a name to the whitelist
 
 		echo "Pay attention to upper/lower case."
 		read -p "Type username: " mkwhite
@@ -495,7 +517,7 @@ case $answer in
 		sleep 1
 		;;
 
-	16)
+	16) # edit whitelist
 
 		echo "open file..."
 		sleep 2
@@ -503,7 +525,7 @@ case $answer in
 		sleep 1
 		;;
 
-	17)
+	17)	# edit server.cfg
 
 		echo "open file..."
 		sleep 2
@@ -518,13 +540,13 @@ case $answer in
 		fi
 		;;
 
-	18)
+	18)	# edit crontab
 
 	    crontab -e
 	    sleep 3
 	    ;;
 
-	19)
+	19)	# edit blacklist
 
 		echo "open file..."
 		sleep 2
@@ -532,7 +554,7 @@ case $answer in
 		sleep 1
 		;;
 
-	20)
+	20)	# edit welcome message
 
 		echo "openfile..."
 		sleep 2
