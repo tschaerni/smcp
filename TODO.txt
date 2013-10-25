@@ -10,12 +10,11 @@ Todo List:
 [X]	mobclean feature + crontab
 [ ]	implement backupfunctions for Database / config files
 [ ]	uptime display
+[ ]	write a libfile for all functions to make an "api" for the webinterface
 
 eventually coming features:
 
 	- a Language file, so it is easier to translate the text to other languages
-
-	- eventually a lib file for the functions, it make the script smaller
 
 	- a single config file for both scripts
 
