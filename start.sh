@@ -1,19 +1,12 @@
 #!/bin/bash
 trap "kill -TERM -$$" INT
 
+. ./smcp.conf
+. ./functionlib.sh
 BASEDIR=$(dirname `readlink -f $0`)
-STATE=$BASEDIR/state
-LOCK=$BASEDIR/shutdown.lock
-ADMINS=$BASEDIR/server/admins.txt
-SCREENSESSION=starmade
-PORT=4242
-CPUTHREADS=4
-MINMEM=512m
-MAXMEM=4g
 PID=$$
 SCRIPTNAME=$(basename $0)
 PIDFILE=/tmp/starmade$PORT.pid
-cmd="ionice -c2 -n0 nice -n -10 rlwrap java -Xms$MINMEM -Xmx$MAXMEM -XX:ParallelGCThreads=$CPUTHREADS -d64 -jar StarMade.jar -server -port:$PORT"
 
 currentSecs(){
 	dt=$(date +%Y-%m-%d\ %H:%M:%S)
@@ -21,7 +14,7 @@ currentSecs(){
 }
 
 shutdowncmd(){
-	echo "$(timestamp) Initiate user-shutdown." | tee -a $log
+	echo "$(timestamp) Initiate user-shutdown." | tee -a $doglog
 	echo "stop $(currentSecs)" > $STATE
 	echo "" > $ADMINS
 	rm $LOCK
@@ -31,11 +24,7 @@ shutdowncmd(){
 }
 
 cd $BASEDIR/server
-log=$BASEDIR/server/logs/watchdog.log
-
-timestamp(){
-	echo "$(date +%d.%m.%y) $(date +%H:%M:%S)"
-}
+doglog=$BASEDIR/server/logs/watchdog.log
 
 # PIDfile check
 # ENDEXECUTION, if 1, stop script, if 0 proceed.
@@ -78,9 +67,9 @@ while true; do
 	else
 
 		echo "start $(currentSecs)" > $STATE
-		echo "$(timestamp) Running command: '$cmd'" | tee -a $log
+		echo "$(timestamp) Running command: '$cmd'" | tee -a $doglog
 		$cmd
-		echo "$(timestamp) Server 'StarMade' crashed with exit code $?.  Restarting..." | tee -a $log
+		echo "$(timestamp) Server 'StarMade' crashed with exit code $?.  Restarting..." | tee -a $doglog
 		echo "" > $ADMINS
 
 	fi
