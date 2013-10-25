@@ -84,8 +84,8 @@ restart(){
 
 }
 
-serverAlive()
-{
+serverAlive(){
+
 	status=$(echo "" | netcat -v -w 1 localhost $PORT 2>&1|tail -1|awk '{print $5}')
 
 	#status=$(tcptraceroute -S -w 10 localhost $PORT 2> /dev/null|tail -1|awk '{print $4}')
