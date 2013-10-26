@@ -1,5 +1,8 @@
 <?php
-$admin_file = '/home/starmade/StarMadeServer/StarMade/admins.txt';
+include_once('config.php');
+
+// Parse admins.txt StarMade File
+$admin_file = $starmadedir.'/admins.txt';
 
 $admins_active = array();
 
@@ -17,8 +20,7 @@ if (file_exists($admin_file)) {
 ?>
 <table>
 <?php
-$admins = array('Ret0rus','Tuvian','ClipKlap','fredforlaut','Zodiak','foxteladi','IshtarStar');
-
+// Output Admins from config.php -> $admins
 foreach($admins as $a) {
 
 	$style = '';
@@ -28,9 +30,9 @@ foreach($admins as $a) {
 		$active = '<span>active</span>';
 	}
 ?>
-				<tr>
-				<td><a href="#" class="<?= $a ?>"<?= $style ?>><?= $a ?></a><?= $active ?></td>
-				</tr>
+	<tr>
+		<td><a href="#" class="<?= $a ?>"<?= $style ?>><?= $a ?></a><?= $active ?></td>
+	</tr>
 <?php
 }
 ?>
