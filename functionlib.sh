@@ -3,7 +3,6 @@
 # variables
 . ./smcp.conf
 BASEDIR=$(dirname `readlink -f $0`)
-PID=$$
 
 # functions
 
@@ -119,36 +118,6 @@ cleanmob(){
 	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG«
 
 }
-# mobclean over parameter			XXX XXX Hier kommt noch eine Fallunterscheidung hin (case $1 ; -r) -c) *) ; esac)	XXX XXX XXX
-if [ "$1" = "-c" ] ; then
-
-	cleanmob
-	exit 0
-
-else
-
-	# restart over parameter
-	if [ "$1" = "-r" ] ; then
-
-		restart
-		exit 0
-
-	else
-		continue
-	fi
-
-# end if for 137
-fi
-#versioncheck 
-CURRENTSMCPVERSION=$(curl --silent http://smcp.cerny.li/version)
-comparateversion=$(echo $CURRENTSMCPVERSION'>'$SMCPVERSION | bc -l)
-if [ $comparateversion == 1 ] ; then
-
-	clear
-	echo -e "\nThere is a new version available!\n\nThere can be found on http://smcp.cerny.li/"
-	sleep 10
-
-fi
 
 # PID grep, for the StarMade Server
 pid(){
@@ -159,18 +128,10 @@ pid(){
 
 }
 
-# refresh starmade pid
-SMPID=$(pid)
+#distinctive case
+case $1 in
 
-clear
-
-echo ""
-echo -e "
-StarMade Version: 		$SMVERSION
-PID of the StarMade Server:	$SMPID"
-case $answer in
-
-	1)	# start
+	start)	# start
 
 		#if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
 			# session doesn't exist
@@ -194,11 +155,7 @@ case $answer in
 		#fi
 		;;
 
-	2)	# shutdown
-
-		read -p "Should the server be shut down? y/n: " stopanswer
-		if [ "$stopanswer" = "y" ] ; then
-
+	stop)	# shutdown
 			touch $LOCK
 			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
 			screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
@@ -212,284 +169,86 @@ case $answer in
 			sleep 30
 			echo "Shutdown was performed, please check..."
 			sleep 5
-
-		else
-
-			echo "Abort..."
-			sleep 5
-
-		fi
 		;;
 
-	3)	# restart
+	restart)	# restart
+		restart
+	;;
 
-		read -p "Should the server be restarting? y/n: " restartanswer
-		if [ "$restartanswer" = "y" ] ; then
-
-			restart
-
-		else
-
-		echo "Abort..."
-		sleep 5
-
-		fi
-		;;
-
-	4)	# status
-
+	status)	# status
 		echo "Server is $(serverAlive) with $(players) of max $MAXPLAYERS players."
-		sleep 8
-		;;
+	;;
 
-	5)	# update
-	
-		echo "It is recommended before updating to make a backup!"
-		read -p "Should the server be updating? y/n: " updateanswer
-		if [ "$updateanswer" = "y" ] ; then
+	update)	# update
+		java -jar StarMade-Starter.jar -nogui
+	;;  
 
-			read -p "Should the server be shut down? y/n: " stopanswer
-			if [ "$stopanswer" = "y" ] ; then
+	emergency)	# emergency shutdown
+		kill $SMPID
+	;;
 
-				touch $LOCK
-				screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
-				screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
-				echo "Initiate shutdown. Time left: 120s"
-				sleep 60
-				screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 60 seconds!$(printf \\r)"
-				screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
-				echo "Shutdown in 60s"
-				sleep 30
-				echo "Shutdown in 30s"
-				sleep 30
-				echo "Shutdown was perfomed. Please check..."
-				echo "Checking server status..."
-				sleep 1
+	kill)	# kill the server process
 
-				if [ "$(serverAlive)" = "offline" ] ; then
-
-					echo "Server has been shut down properly. Proceed with the update..."
-					sleep 3
-					java -jar StarMade-Starter.jar -nogui
-					sleep 15
-
-				else
-
-					echo "Server was not shut down. Please Check! Abort update..."
-					sleep 5
-
-				fi
-
-			else
-
-				echo "Abort..."
-				sleep 5
-
-			fi
-
-		else
-
-			echo "Abort..."
-			sleep 5
-
-		fi
-		;;  
-
-	6)	# emergency shutdown
-
-		read -p "Should be a 'emergency shutdown' performed? y/n: " emerganswer
-		if [ "$emerganswer" = "y" ] ; then
-
-			echo "Send termination signal (SIGTERM)"
-			sleep 1
-			kill $SMPID
-			echo "Was performed, please check..."
-			sleep 5
-
-		else
-
-			echo "Abort..."
-			sleep 5
-
-		fi
-		;;
-
-	7)	# kill the server process
-
-		echo -e "\n\e[31m\e[4mCAUTION!!! When using this function, it IS LOST DATA!\e[0m"
-		read -p "Really proceed? If yes, write: Yes, I want to continue! : " killanswer
-		if [ "$killanswer" = "Yes, I want to continue!" ] ; then
-
-			echo "Grab the sledgehammer..."
-			sleep 2
-			echo "Beat the process down..."
-			sleep 1
-			echo "*dong*"
-			sleep 1
-			echo "*dong*"
-			sleep 2
-			echo "*klirr*"
-			sleep 1
 			echo "execute 'kill -9 $SMPID'"
 			kill -9 $SMPID
-			sleep 1
-			echo "Termination of the process is successfully, restarting..."
-			sleep 4
+	;;
 
-	    else
+	cleanmob) # mob clean
+		cleanmob
+	;;
 
-			echo "Wrong answer, abort..."
-			sleep 5
-
-		fi
-		;;
-
-	8) # mob clean
-
-		screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
-		sleep 10
-		echo "$(mobcount) records of mobs where found in the database."
-		read -p "Proceed with the deletion? [y/n]:" answer
-		if [ "$answer" = "y" ] ; then
-
-			echo "Deleting Mob records..."
-			screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB unused true$(printf \\r)"
-			echo "$(timestamp) Despawn all Mobs." | tee -a $LOG
-			sleep 5
-			echo "Performed deletion. $(mobcount) records of mobs where found in the database."
-			sleep 5
-
-		else
-
-			echo "Abort..."
-			Sleep 3
-
-		fi
-		;;
-
-	9)	# reattach the screensession
+	screen)	# reattach the screensession
 
 		screen -rx $SCREENSESSION
-		sleep 2
-		;;
+	;;
 
-	10)	# Database size
-
-		echo "calculate..."
-		sleep 1
+	dbsize)	# Database size
 		du -sch $BASEDIR/server/server-database/ | tail -n 1
-		sleep 5
-		;;
+	;;
 
-	11)	# send command
+	command)	# send command
+		screen -S $SCREENSESSION -p 0 -X stuff "$2 $(printf \\r)"
+	;;
 
-		echo -e "All StarMade commands are possible. Caution! no feedback.\nExample: /force_save"
-		read -p "enter the command: " order
-		screen -S $SCREENSESSION -p 0 -X stuff "$order $(printf \\r)"
-		sleep 2
-		;;
+	msg)	# send message
+		screen -S $SCREENSESSION -p 0 -X stuff "/chat $2 $(printf \\r)"
+	;;
 
-	12)	# send message
+	addadmin)	# make admin
+		screen -S $SCREENSESSION -p 0 -X stuff "/add_admin $2 $(printf \\r)"
+	;;
 
-		echo "Attention, only one row is possible!"
-		read -p "Broadcast Message: " msg
-		screen -S $SCREENSESSION -p 0 -X stuff "/chat $msg $(printf \\r)"
-		sleep 2
-		;;
+	rmadmin)	# remove admin
+		screen -S $SCREENSESSION -p 0 -X stuff "/remove_admin $2 $(printf \\r)"
+	;;
 
-	13)	# make admin
+	addwhite)	# add a name to the whitelist
+		screen -S $SCREENSESSION -p 0 -X stuff "/whitelist_name $2 $(printf \\r)"
+	;;
 
-		echo "current admins:"
-		cat $BASEDIR/server/admins.txt
-		echo ""
-		echo "Pay attention to upper/lower case."
-		read -p "Type username: " mkadmin
-		screen -S $SCREENSESSION -p 0 -X stuff "/add_admin $mkadmin $(printf \\r)"
-		sleep 5
-		echo "current admins:"
-		cat $BASEDIR/server/admins.txt
-		sleep 5
-		;;
-
-	14)	# remove admin
-
-		echo "current admins:"
-		cat $BASEDIR/server/admins.txt
-		echo ""
-		echo "Pay attention to upper/lower case."
-		read -p "Type username: " rmadmin
-		screen -S $SCREENSESSION -p 0 -X stuff "/remove_admin $rmadmin $(printf \\r)"
-		sleep 5
-		echo "current admins:"
-		cat $BASEDIR/server/admins.txt
-		sleep 5
-		;;
-
-	15)	# add a name to the whitelist
-
-		echo "Pay attention to upper/lower case."
-		read -p "Type username: " mkwhite
-		screen -S $SCREENSESSION -p 0 -X stuff "/whitelist_name $mkwhite $(printf \\r)"
-		sleep 1
-		;;
-
-	16) # edit whitelist
-
-		echo "open file..."
-		sleep 2
+	editwhite) # edit whitelist
 		$EDITOR $BASEDIR/server/whitelist.txt
-		sleep 1
-		;;
+	;;
 
-	17)	# edit server.cfg
-
-		echo "open file..."
-		sleep 2
+	editcfg)	# edit server.cfg
 		$EDITOR $BASEDIR/server/server.cfg
-		sleep 1
-		read -p "Should the server be restarting? [y/n]: " restartanswer
-		if [ "$restartanswer" = "y" ] ; then
-			restart
-		else
-			echo "Don't restart. The server settings are read again until the next restart."
-			sleep 5
-		fi
-		;;
+	;;
 
-	18)	# edit crontab
+	editcron)	# edit crontab
+		crontab -e
+	;;
 
-	    crontab -e
-	    sleep 3
-	    ;;
-
-	19)	# edit blacklist
-
-		echo "open file..."
-		sleep 2
+	editblack)	# edit blacklist
 		$EDITOR $BASEDIR/server/blacklist.txt
-		sleep 1
-		;;
+	;;
 
-	20)	# edit welcome message
-
-		echo "openfile..."
-		sleep 2
+	editmotd)	# edit welcome message
 		$EDITOR $BASEDIR/server/server-message.txt
-		sleep 1
-		;;
+	;;
 
-	0)	# exit the script
-
-		echo "Exit the StarMade Control Panel..."
-		sleep 1
+	exit)	# exit the script
 		break
-		;;
-
-	r)	# reload the panel for some layout issues or for PID Reload
-
-		echo "reload"
-		sleep 1 
-		;;
+	;;
 
 	*) # i think this functions is clear like water ;)
 
