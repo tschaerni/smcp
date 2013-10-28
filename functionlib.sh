@@ -1,8 +1,6 @@
 #!/bin/bash
-
-# variables
-. ./smcp.conf
 BASEDIR=$(dirname `readlink -f $0`)
+source $BASEDIR/smcp.conf
 
 # functions
 
@@ -188,9 +186,8 @@ case $1 in
 	;;
 
 	kill)	# kill the server process
-
-			echo "execute 'kill -9 $SMPID'"
-			kill -9 $SMPID
+		echo "execute 'kill -9 $SMPID'"
+		kill -9 $SMPID
 	;;
 
 	cleanmob) # mob clean
@@ -251,10 +248,8 @@ case $1 in
 	;;
 
 	*) # i think this functions is clear like water ;)
-
-	    echo "unknown parameter, return back to the menu"
-	    sleep 1
-
+		break
+	;;
 # end of case
 esac
 
