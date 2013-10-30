@@ -8,7 +8,7 @@ body {
 	line-height: 17px;
 }
 #wrapper {
-	width: 670px;
+	width: 830px;
 	margin: 0 auto;
 }
 #chat {
@@ -34,6 +34,13 @@ body {
 	font-size: 12px;
 }
 #chat td strong {
+	text-weight: normal;
+	color: #CC0000;
+}
+#chat .server {
+	display: inline;
+	padding: 0;
+	margin: 0;
 	text-weight: normal;
 	color: #CC0000;
 }
@@ -74,6 +81,9 @@ h1 {
 	padding-left: 24px;
 	font-size: 22px;
 	color: #666;
+}
+h1.logo {
+	color: #454545;
 }
 h2 {
 	width: 180px;
@@ -122,6 +132,16 @@ h2 span {
 #players .inner ul li {
 	padding: 4px;
 	font-size: 11px;
+}
+#players .kick {
+	float: right;
+	cursor: pointer;
+}
+#players .pm {
+	float: right;
+	cursor: pointer;
+	margin-right: 4px;
+	margin-top: 2px
 }
 #lastcmds {
 	position: relative;
@@ -310,6 +330,30 @@ h2 span {
 #infos td:first-child {
 	font-weight: bold;
 	white-space: nowrap
+}
+#tools {
+	margin: 55px 9px 0 0;
+	width: 140px;
+	padding: 20px 0px 20px 20px;
+	float: left;
+	border: 1px solid #333;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	text-align: left;
+	font-size: 11px;
+}
+#tools ul {
+	padding: 0 0 0 10px;
+	margin: 0;
+}
+#tools a {
+	text-decoration: none;
+	color: #cc0000;
+	margin: 0 0 0 5px;
+}
+#tools a:hover {
+	text-decoration: underline;
 }
 .left {
 	width: 490px;

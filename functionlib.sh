@@ -112,7 +112,10 @@ mobcount(){
 
 cleanmob(){
 
-	screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB unused true$(printf \\r)"«
+	screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat prepare for lag spike$(printf \\r)"
+	sleep 5
+	screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB_ unused true$(printf \\r)"
 	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG«
 
 }
@@ -131,7 +134,7 @@ case $1 in
 
 	start)	# start
 
-		#if [[ -z $(screen -ls $SCREENSESSION | grep $SCREENSESSION) ]] ; then
+		if [[ -z $(screen -ls | grep $SCREENSESSION | grep tached) ]] ; then
 			# session doesn't exist
 			echo "Starting screen session '$SCREENSESSION'..."
 			screen -d -m -S $SCREENSESSION
@@ -145,12 +148,12 @@ case $1 in
 			sleep 1
 			echo "My job is done. Greetings from Zodiak!"
 
-		#else
+		else
 
-			#echo "It is already a running '$SCREENSESSION' screen session, please check..."
-			#sleep 5
+			echo "There is already a running '$SCREENSESSION' screen session, please check..."
+			sleep 5
 
-		#fi
+		fi
 		;;
 
 	stop)	# shutdown
@@ -190,12 +193,15 @@ case $1 in
 		kill -9 $SMPID
 	;;
 
+	mobs)
+		echo "There are $(mobcount) in the database."
+	;;
+
 	cleanmob) # mob clean
 		cleanmob
 	;;
 
 	screen)	# reattach the screensession
-
 		screen -rx $SCREENSESSION
 	;;
 
@@ -209,6 +215,10 @@ case $1 in
 
 	msg)	# send message
 		screen -S $SCREENSESSION -p 0 -X stuff "/chat $2 $(printf \\r)"
+	;;
+
+	admins)
+		cat $ADMINS
 	;;
 
 	addadmin)	# make admin
@@ -244,11 +254,11 @@ case $1 in
 	;;
 
 	exit)	# exit the script
-		break
+		exit 0
 	;;
 
 	*) # i think this functions is clear like water ;)
-		break
+		exit 0
 	;;
 # end of case
 esac

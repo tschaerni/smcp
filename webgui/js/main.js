@@ -1,5 +1,6 @@
 $( document ).ready(function() {
 	var chatbuffer = 0;
+	var playerbuffer = 0;
 	var input_mode = "chat";
 	var help_active = false;
 	var info_active = false;
@@ -43,6 +44,22 @@ $( document ).ready(function() {
 		});
 	});
 	
+	$("#tools a").click(function() {
+		getid = $(this).attr("id");
+		if (getid == "emergency" || getid == "kill" || getid == "cleanmob") {
+			if (confirm('You really want to execute?')) {
+				$.get( "inc/handler.php?a=" + getid, function( data ) {
+					$('#lastcmds .inner').prepend('<div>' + data + '</div>');
+				});
+			}
+		} else {
+			$.get( "inc/handler.php?a=" + getid, function( data ) {
+				$('#lastcmds .inner').prepend('<div>' + data + '</div>');
+			});
+		}
+		return false;
+	});
+	
 	$("#chatform img").click(function() {
 		var ifactive = $(this).attr("data-active");
 		$('#text').val('');
@@ -67,7 +84,7 @@ $( document ).ready(function() {
 	});
 	
 	function reloadAdmins() {
-		$.get( "inc/admins.php", function( data ) {
+		$.get( "inc/data.php?a=admins", function( data ) {
 			$("#addadmin .inner").html(data);
 			$("#addadmin a").click(function() {
 				var getadmin = $(this).attr("class");
@@ -90,18 +107,18 @@ $( document ).ready(function() {
 	
 	function refreshChat() {
 		$.get( "inc/data.php?a=chat", function( data ) {
-			$("#inner").html(data);
-			
-			$("#chat table tr").hover(
-				function() {
-					$(this).css("background","rgba(255,255,255,.15)");
-				},
-				function() {
-					$(this).css("background","");
-				}
-			);
-			
-			if (chatbuffer.length != data.length) {
+			if (data.length != chatbuffer.length) {
+				$("#inner").html(data);
+				
+				$("#chat table tr").hover(
+					function() {
+						$(this).css("background","rgba(255,255,255,.15)");
+					},
+					function() {
+						$(this).css("background","");
+					}
+				);
+				
 				chatbuffer = data;
 				$('#chat').scrollTop( $('#chat #inner').height());
 			}
@@ -111,27 +128,42 @@ $( document ).ready(function() {
 	}
 	function getPlayers() {
 		$.get( "inc/data.php?a=players", function( data ) {
-			$("#players .inner").html(data);
-			
-			$("#players .inner li").hover(
-				function() {
-					$(this).css("background","rgba(255,255,255,.15)");
-				},
-				function() {
-					$(this).css("background","");
-				}
-			);
-			var count = $("#players .inner li").length;
-			
-			$("#count").html(count + ' online');
-			
-			$("#players .inner li img").click(function() {
-				getnick = $(this).attr("data-nickname");
-				if(confirm('Spieler ' + getnick + ' wirklich kicken?')) {
-					$.post( "inc/handler.php?a=kick", { name: getnick }, function (data) {
+			if (data.length != playerbuffer.length) {
+				$("#players .inner").html(data);
+				
+				$("#players .inner li").hover(
+					function() {
+						$(this).css("background","rgba(255,255,255,.15)");
+					},
+					function() {
+						$(this).css("background","");
+					}
+				);
+				var count = $("#players .inner li").length;
+				
+				$("#count").html(count + ' online');
+				
+				$("#players .inner li img.kick").click(function() {
+					getnick = $(this).attr("data-nickname");
+					if (confirm('Kick player ' + getnick + '?')) {
+						$.post( "inc/handler.php?a=kick", { name: getnick }, function (data) {
+						});
+					}
+				});
+				$("#players .inner li img.pm").click(function() {
+					getnick = $(this).attr("data-nickname");
+					input_mode = "terminal";
+					
+					$("#chatform img").fadeOut(50, function() {
+						$(this).attr("src","img/chat.png").fadeIn(100);
 					});
-				}
-			});
+					$("#chatform img").attr("data-active", input_mode);
+				
+					$("#chatform #text").attr("placeholder","Command ...");
+					$('#text').val('/pm ' + getnick + ' ').focus();
+				});
+				playerbuffer = data;
+			}
 		});
 	}
 	initChat = setInterval(function() {
@@ -151,7 +183,6 @@ $( document ).ready(function() {
 			getmode = $("#chatform img").attr("data-active");
 			if (getmode == "chat") {
 				$.post( "inc/handler.php?a=chat", $(myformselector).serialize(), function (data) {
-					refreshChat();
 					$('#text').val('');
 				});
 			}
@@ -161,6 +192,9 @@ $( document ).ready(function() {
 					$('#lastcmds .inner').prepend('<div>' + data + '</div>');
 				});
 			}
+			$.get( "inc/logs.php", function() {
+				refreshChat();
+			});
 		}
 	});
 });

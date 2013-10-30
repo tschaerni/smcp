@@ -19,23 +19,33 @@ header("Content-Type: text/html; charset=utf-8");
 </head>
 <body>
 <div id="wrapper">
+	<div id="tools">
+		<ul>
+			<li><a href="#" id="status">Server status</a></li>
+			<li><a href="#" id="emergency">Emergency shutdown</a></li>
+			<li><a href="#" id="kill">Kill StarMade process</a></li>
+			<li><a href="#" id="mobs">Count MOBs</a></li>
+			<li><a href="#" id="cleanmob">Clean MOBs</a></li>
+			<li><a href="#" id="dbsize">Database size</a></li>
+		</ul>
+	</div>
 	<div class="left">
-	<h1>SMCP webgui</h1>
-	<h3>FeedUpYourBeast - LiveChat</h3>
-	<div id="chat">
-		<div id="inner">
+		<h1 class="logo">SMCP webgui</h1>
+		<h3>FeedUpYourBeast - LiveChat</h3>
+		<div id="chat">
+			<div id="inner">
+			</div>
 		</div>
-	</div>
-	<div id="form">
-		<form method="post" action="" id="chatform" name="chatform">
-			<input type="text" id="text" name="text" placeholder="Text-Chat ..." autocomplete="off"><img src="img/terminal.png" data-active="chat" height="16">
-		</form>
-	</div>
-	<div id="lastcmds">
-		<img src="img/help.png" data-active="chat" height="16">
-		<div class="inner">
+		<div id="form">
+			<form method="post" action="" id="chatform" name="chatform">
+				<input type="text" id="text" name="text" placeholder="Text-Chat ..." autocomplete="off"><img src="img/terminal.png" data-active="chat" height="16">
+			</form>
 		</div>
-	</div>
+		<div id="lastcmds">
+			<img src="img/help.png" data-active="chat" height="16">
+			<div class="inner">
+			</div>
+		</div>
 	</div>
 	<div class="right">
 		<h2>Who is online? <span>< 5 min.</span></h2><div id="count">0 online</div>

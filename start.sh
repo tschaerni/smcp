@@ -1,9 +1,9 @@
 #!/bin/bash
 trap "kill -TERM -$$" INT
 
-. ./smcp.conf
-. ./functionlib.sh
 BASEDIR=$(dirname `readlink -f $0`)
+source $BASEDIR/smcp.conf
+source $BASEDIR/functionlib.sh
 PID=$$
 SCRIPTNAME=$(basename $0)
 PIDFILE=/tmp/starmade$PORT.pid
