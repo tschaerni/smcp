@@ -124,6 +124,7 @@ cleanmob(){
 pid(){
 
 		user=$(whoami)
+		#pids=$(pidof java)
 		pids=$(ps aux | grep java | grep StarMade.jar | grep $PORT | grep $user | grep -v rlwrap | awk -F" " '{print $2}')
 		echo "$pids"
 
