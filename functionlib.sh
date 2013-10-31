@@ -195,7 +195,7 @@ case $1 in
 	;;
 
 	mobs)
-		echo "There are $(mobcount) in the database."
+		echo "There are $(mobcount) mobs in the database."
 	;;
 
 	cleanmob) # mob clean
