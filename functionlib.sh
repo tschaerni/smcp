@@ -175,7 +175,7 @@ case $1 in
 	;;
 
 	update)	# update
-		java -jar StarMade-Starter.jar -nogui
+		java -jar $BASEDIR/StarMade-Starter.jar -nogui
 	;;  
 
 	emergency)	# emergency shutdown

@@ -57,12 +57,18 @@ gauge(){
 }
 
 infobox(){
-	dialog --backtitle "SMCP - StarMade Control Panel" --infobox "$INFOVAR" 3 60
+	dialog --backtitle "SMCP - StarMade Control Panel" --infobox "$INFOVAR" 0 0
 }
 
 msgbox(){
-	dialog --backtitle "SMCP - StarMade Control Panel" --msgbox "$MSGVAR" 6 60
+	dialog --backtitle "SMCP - StarMade Control Panel" --msgbox "$MSGVAR" 0 0
 }
+
+yesno(){
+	dialog --backtitle "SMCP - StarMade Control Panel" --yesno "$YESNOVAR" 0 0
+	ANSWER=$?
+}
+
 while true ; do
 
 menu_answer=$(main_menu)
@@ -86,29 +92,86 @@ case $menu_answer in
 
 			start)
 				$BASEDIR/functionlib.sh start
-				dialog --backtitle "SMCP - StarMade Control Panel" \
-					--title "Info"
-					--msgbox
+				INFOVAR="Start performed. Please Check"
 			;;
 
 			stop)
-				$BASEDIR/functionlib.sh stop
-				GAUGETIME="1.2"
-				GAUGEINFO="Shutdown in progress"
-				gauge
-				INFOVAR="Shutdown performed."
-				infobox
-				sleep 5
+				YESNOVAR="Should the server be shutdown?"
+				yesno
+				if [ "$ANSWER" = "0" ] ; then
+					$BASEDIR/functionlib.sh stop
+					GAUGETIME="1.2"
+					GAUGEINFO="Shutdown in progress"
+					gauge
+					INFOVAR="Shutdown performed."
+					infobox
+					sleep 5
+				fi
 			;;
 
 			restart)
-				$BASEDIR/functionlib.sh restart
-				GAUGETIME="3"
-				GAUGEINFO="Restart in progress"
-				gauge
-				INFOVAR="Restart performed."
+				YESNOVAR="Should the server be restarting?"
+				yesno
+				if [ "$ANSWER" = "0" ] ; then
+					$BASEDIR/functionlib.sh restart
+					GAUGETIME="3"
+					GAUGEINFO="Restart in progress"
+					gauge
+					INFOVAR="Restart performed."
+					infobox
+					sleep 5
+				fi
+			;;
+
+			status)
+				MSGVAR=$($BASEDIR/functionlib.sh status)
+				msgbox
+			;;
+
+			update)
+				YESNOVAR="Should the server be updating?"
+				yesno
+				if [ "$ANSWER" = "0" ] ; then
+					$BASEDIR/functionlib.sh stop
+					GAUGETIME="1.2"
+					GAUGEINFO="Shutdown in progress."
+					gauge
+					INFOVAR="Shutdown performed."
+					infobox
+					sleep 3
+
+					until [[ -z pid ]] ; do
+						INFOVAR="Checking shutdown."
+						infobox
+						sleep 0.3
+						INFOVAR="Checking shutdown.."
+						infobox
+						sleep 0.3
+						INFOVAR="Checking shutdown..."
+						infobox
+						sleep 0.3
+					done
+
+					if [ "$(serverAlive)" = "offline" ] ; then
+						INFOVAR="Final check."
+						infobox
+						sleep 3
+					else
+						MSGVAR="Server isn't down. Please Check. Abort update."
+						msgbox
+						continue
+					fi
+
+					INFOVAR="Starting update"
+					infobox
+					sleep 3
+					$BASEDIR/functionlib.sh update
+				fi
+
+				INFOVAR="Aborting..."
 				infobox
-				sleep 5
+				sleep 3
+			;;
 		esac
 		;;
 
