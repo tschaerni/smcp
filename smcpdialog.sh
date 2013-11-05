@@ -5,56 +5,134 @@ BASEDIR=$(dirname `readlink -f $0`)
 #source $BASEDIR/functionlib.sh 2
 
 main_menu(){
-	dialog --backtitle "StarMade Control Panel" --title " Commandline interface - V$SMCPVERSION "\
+	dialog --backtitle "SMCP - StarMade Control Panel" --title " Commandline interface - V$SMCPVERSION "\
 		--cancel-label "Quit" \
-		--menu "Move using [UP] [DOWN], [ENTER] to select" 30 60 23\
-		start "beschreibung"\
-		stop "beschreibung"\
-		restart "beschreibung"\
-		status "beschreibung"\
-		update "beschreibung"\
-		emergency "beschreibung"\
-		kill "beschreibung"\
-		mobs "beschreibung"\
-		cleanmob "beschreibung"\
-		screen "beschreibung"\
-		dbsize "beschreibung"\
-		command "beschreibung"\
-		msg "beschreibung"\
-		admins "beschreibung"\
-		addadmin "beschreibung"\
-		rmaddmin "beschreibung"\
-		addwhite "beschreibung"\
-		editwhite "beschreibung"\
-		editcfg "beschreibung"\
-		editcron "beschreibung"\
-		editblack "beschreibung"\
-		editmotd "beschreibung"\
-		exit "beschreibung" 3>&1 1>&2 2>&3
+		--menu "Move using [UP] [DOWN], [ENTER] to select" 20 60 13\
+		manage "Submenu 'Server management'"\
+		edit "Submenu 'File edit'"\
+		mobs "Retrieves the number of mob entity"\
+		cleanmob "Deletes all mobs from the Database"\
+		screen "Reattach the screensession '$SCREENSESSION'"\
+		dbsize "Shows the current size of the database"\
+		command "send a custom command to the StarMade server"\
+		msg "send a custom message to the StarMade server"\
+		admins "Shows the current admins"\
+		addadmin "Add an admin"\
+		rmaddmin "Remove an admin"\
+		addwhite "Add a Player to the whitelist"\
+		exit "Exit the SMCP" 3>&1 1>&2 2>&3
 }
+
+manage_menu(){
+	dialog --backtitle "SMCP - StarMade Control Panel" --title " Server Management "\
+		--menu "Move using [UP] [DOWN], [ENTER] to select" 15 60 8\
+		start "Start the StarMade server"\
+		stop "Stop the StarMade server"\
+		restart "Restart the StarMade server"\
+		status "Retrieves the status of the Server"\
+		update "Execute an update"\
+		emergency "Try a 'emergency shutdown'"\
+		kill "Kill the StarMade process"\
+		exit "Return to the SMCP" 3>&1 1>&2 2>&3
+}
+
+edit_menu(){
+	dialog --backtitle "SMCP - StarMade Control Panel" --title " File edit "\
+		--menu "Move using [UP] [DOWN], [ENTER] to select" 13 60 6\
+		editwhite "Edit the whitelist"\
+		editcfg "Edit the server.cfg"\
+		editcron "Edit the crontab"\
+		editblack "Edit the blacklist"\
+		editmotd "Edit the welcome message"\
+		exit "Return to the SMCP" 3>&1 1>&2 2>&3
+}
+
+gauge(){
+	{ for I in $(seq 1 100) ; do
+		echo $I
+		sleep $GAUGETIME
+	done
+	echo 100; } | dialog --backtitle "SMCP - StarMade Control Panel" \
+						--gauge "$GAUGEINFO" 6 60 0
+}
+
+infobox(){
+	dialog --backtitle "SMCP - StarMade Control Panel" --infobox "$INFOVAR" 3 60
+}
+
+msgbox(){
+	dialog --backtitle "SMCP - StarMade Control Panel" --msgbox "$MSGVAR" 6 60
+}
+while true ; do
+
 menu_answer=$(main_menu)
+
+opt=${?}
+if [ $opt != 0 ] ; then
+	exit
+fi
 
 case $menu_answer in
 
-	start)
-		echo "starten"
+	manage)
+		manage_menu_answer=$(manage_menu)
+		
+		opt=${?}
+		if [ $opt != 0 ] ; then
+			continue
+		fi
+
+		case $manage_menu_answer in
+
+			start)
+				$BASEDIR/functionlib.sh start
+				dialog --backtitle "SMCP - StarMade Control Panel" \
+					--title "Info"
+					--msgbox
+			;;
+
+			stop)
+				$BASEDIR/functionlib.sh stop
+				GAUGETIME="1.2"
+				GAUGEINFO="Shutdown in progress"
+				gauge
+				INFOVAR="Shutdown performed."
+				infobox
+				sleep 5
+			;;
+
+			restart)
+				$BASEDIR/functionlib.sh restart
+				GAUGETIME="3"
+				GAUGEINFO="Restart in progress"
+				gauge
+				INFOVAR="Restart performed."
+				infobox
+				sleep 5
+		esac
 		;;
 
-	stop)
-		echo "stoppen"
+	edit)
+		edit_menu_answer=$(edit_menu)
+
+		opt=${?}
+		if [ $opt != 0 ] ; then
+			continue
+		fi
+		
+		case $edit_menu_answer in
+
+			editwhite)
+			
+			;;
+		esac
 		;;
 
-	restart)
-		echo "neustart"
+	exit)
+		exit 0
 		;;
-
-	status)
-		echo "statusabruf"
-		;;
-
 esac
 
+done
 
-
-$BASEDIR/functionlib.sh $VAR 2>/dev/null
 exit 0

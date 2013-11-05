@@ -161,16 +161,9 @@ case $1 in
 			touch $LOCK
 			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
 			screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
-			echo "Initiate shutdown. Time left: 120s"
 			sleep 60
 			screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server Backup or Update in 60 seconds!$(printf \\r)"
 			screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
-			echo "Shutdown in 60s"
-			sleep 30
-			echo "Shutdown in 30s"
-			sleep 30
-			echo "Shutdown was performed, please check..."
-			sleep 5
 		;;
 
 	restart)	# restart
@@ -218,7 +211,7 @@ case $1 in
 		screen -S $SCREENSESSION -p 0 -X stuff "/chat $2 $(printf \\r)"
 	;;
 
-	admins)
+	admins)	# list admins.txt
 		cat $ADMINS
 	;;
 
