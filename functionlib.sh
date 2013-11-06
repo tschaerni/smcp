@@ -10,28 +10,28 @@ restart(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat        ATTENTION ATTENTION!!!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 5 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "restart in: 5min"
+
 	sleep 60
 
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat preparation warp-core shutdown$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 4 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "restart in: 4min"
+
 	sleep 60
 
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat        reduce speed!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat     Server-Restart in 3 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "restart in: 3min"
+
 	sleep 60
 
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat     engine shutdown!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat    Server-Restart in 2 minutes$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
-	echo "restart in: 2min"
+
 	sleep 60
 
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
@@ -39,28 +39,20 @@ restart(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat  Server-Restart in 60 seconds$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat ##########################$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
-	echo "restart in: 60s"
 	sleep 60
-
-	echo "restart was performed, please check..."
-	sleep 5
-
 }
 
 shutdowncmd(){
 	touch $LOCK
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for Backup or Update in 2 minutes!$(printf \\r)"
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for backup or update in 2 minutes!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/force_save$(printf \\r)"
-	echo "Initiate shutdown. Time left: 120s"
+
 	sleep 60
-	screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server Backup or Update in 60 seconds!$(printf \\r)"
+
+	screen -S $SCREENSESSION -p 0 -X stuff "/chat SHUTDOWN Server for backup or update in 60 seconds!$(printf \\r)"
 	screen -S $SCREENSESSION -p 0 -X stuff "/shutdown 60$(printf \\r)"
-	echo "Shutdown in 60s"
-	sleep 30
-	echo "Shutdown in 30s"
-	sleep 30
-	echo "Shutdown was performed, please check..."
-	sleep 5
+
+	sleep 60
 }
 
 serverAlive(){
@@ -69,15 +61,10 @@ serverAlive(){
 
 	#status=$(tcptraceroute -S -w 10 localhost $PORT 2> /dev/null|tail -1|awk '{print $4}')
 	if [ "$status" == "open" ]; then
-
 		echo online
-
 	else
-
 		echo offline
-
 	fi
-
 }
 
 players(){
@@ -99,14 +86,11 @@ timestamp(){
 mobcount(){
 
 	MOB=$(ls -l $BASEDIR/server/server-database/ | grep ENTITY_SHIP_MOB | wc -l)
+
 	if [ $MOB = 0 ] ; then
-
 		echo "no"
-
 	else
-
 		echo "$MOB"
-
 	fi
 }
 
@@ -116,8 +100,7 @@ cleanmob(){
 	screen -S $SCREENSESSION -p 0 -X stuff "/chat prepare for lag spike$(printf \\r)"
 	sleep 5
 	screen -S $SCREENSESSION -p 0 -X stuff "/despawn_all MOB_ unused true$(printf \\r)"
-	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG«
-
+	echo "$(timestamp) Despawn all Mobs." | tee -a $LOG
 }
 
 # PID grep, for the StarMade Server
@@ -179,12 +162,12 @@ case $1 in
 	;;  
 
 	emergency)	# emergency shutdown
-		kill $SMPID
+		kill $(pid)
 	;;
 
 	kill)	# kill the server process
-		echo "execute 'kill -9 $SMPID'"
-		kill -9 $SMPID
+		echo "execute 'kill -9 $(pid)'"
+		kill -9 $(pid)
 	;;
 
 	mobs)
