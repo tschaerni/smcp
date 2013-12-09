@@ -105,7 +105,7 @@ case $menu_answer in
 				YESNOVAR="Should the server be shutdown?"
 				yesno
 				if [ "$ANSWER" = "0" ] ; then
-					$BASEDIR/functionlib.sh stop
+					$BASEDIR/functionlib.sh stop &
 					GAUGETIME="1.2"
 					GAUGEINFO="Shutdown in progress"
 					gauge
@@ -119,7 +119,7 @@ case $menu_answer in
 				YESNOVAR="Should the server be restarting?"
 				yesno
 				if [ "$ANSWER" = "0" ] ; then
-					$BASEDIR/functionlib.sh restart
+					$BASEDIR/functionlib.sh restart &
 					GAUGETIME="3"
 					GAUGEINFO="Restart in progress"
 					gauge
@@ -138,7 +138,7 @@ case $menu_answer in
 				YESNOVAR="Should the server be updating?"
 				yesno
 				if [ "$ANSWER" = "0" ] ; then
-					$BASEDIR/functionlib.sh stop
+					$BASEDIR/functionlib.sh stop &
 					GAUGETIME="1.2"
 					GAUGEINFO="Shutdown in progress."
 					gauge
